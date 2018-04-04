@@ -42,6 +42,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		log.info("onAuthenticationSuccess(...)");
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setStatus(HttpStatus.OK.value());
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Methods", "*");
+		response.addHeader("Access-Control-Allow-Headers", "*");
+		
 		String username = authentication.getPrincipal().toString();
 		
 		User user = userService.getUserByUsername(username);

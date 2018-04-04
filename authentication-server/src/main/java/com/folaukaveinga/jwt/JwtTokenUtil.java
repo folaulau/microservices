@@ -20,8 +20,9 @@ import io.jsonwebtoken.impl.DefaultClock;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    static final String CLAIM_KEY_USERNAME = "sub";
-    static final String CLAIM_KEY_CREATED = "iat";
+    static final String TOKEN_SUBJECT = "retaurant";
+    static final String TOKEN_CREATOR = "iate-restaurant";
+    
     private static final long serialVersionUID = -3301605591108950415L;
     private Clock clock = DefaultClock.INSTANCE;
 
@@ -100,11 +101,12 @@ public class JwtTokenUtil implements Serializable {
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         final Date createdDate = clock.now();
         final Date expirationDate = calculateExpirationDate(createdDate);
-
+        // payload of claims but not both
         return Jwts.builder()
             .setClaims(claims)
-            .setSubject(subject)
+            .setSubject(TOKEN_SUBJECT)
             .setIssuedAt(createdDate)
+            .setIssuer(TOKEN_CREATOR)
             .setExpiration(expirationDate)
             .signWith(SignatureAlgorithm.HS512, secret)
             .compact();

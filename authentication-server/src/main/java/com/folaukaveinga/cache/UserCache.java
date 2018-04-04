@@ -14,18 +14,13 @@ import com.folaukaveinga.model.User;
 @Service
 public class UserCache {
 	
-	private static final String HASH_KEY = "user";
+	private static final String HASH_KEY = "restaurant-user";
 	
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 	
 	// Use Hash to hash key and store that key instead of plain text key
 	private HashOperations<String, Object, Object> hashOperations;
-
-	@Autowired
-	public UserCache(RedisTemplate<String, Object> redisTemplate) {
-		this.redisTemplate = redisTemplate;
-	}
 
 	@PostConstruct
 	public void init() {
@@ -40,11 +35,11 @@ public class UserCache {
 		return (User) hashOperations.get(HASH_KEY, token);
 	}
 
-	public Map<Object, Object> findAllUsers() {
-		return hashOperations.entries(HASH_KEY);
-	}
-
 	public long delete(String token) {
 		return hashOperations.delete(HASH_KEY, token);
+	}
+	
+	public Map<Object, Object> findAllUsers() {
+		return hashOperations.entries(HASH_KEY);
 	}
 }

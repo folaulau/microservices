@@ -1,2 +1,2 @@
-DROP DATABASE `restaurant`;
-CREATE SCHEMA `restaurant`;
+DROP DATABASE IF EXISTS `restaurant`;
+CREATE DATABASE `restaurant` ;
