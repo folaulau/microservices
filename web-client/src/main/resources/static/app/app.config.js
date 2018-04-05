@@ -3,12 +3,15 @@ angular.module('restaurant').factory('TokenStorage', function($log) {
 		var storageKey = 'auth_token';
 		return {
 			store : function(token) {
+				$log.log("Storing token: "+token);
 				return localStorage.setItem(storageKey, token);
 			},
 			retrieve : function() {
+				$log.log("Retrieving token");
 				return localStorage.getItem(storageKey);
 			},
 			clear : function() {
+				$log.log("Clearing token");
 				return localStorage.removeItem(storageKey);
 			}
 		};

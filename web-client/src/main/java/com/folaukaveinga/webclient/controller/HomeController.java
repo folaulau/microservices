@@ -27,4 +27,10 @@ public class HomeController {
 		log.info("login");
 		return "login";
 	}
+	
+	@GetMapping("/order")
+	public String order() {
+		log.info("order");
+		return "order";
+	}
 }

@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 
 import com.folaukaveinga.model.User;
 import com.folaukaveinga.service.UserService;
+import com.folaukaveinga.utility.PasswordUtil;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -37,6 +38,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	    
 	    if(user==null) {
 	    		throw new UsernameNotFoundException("User not found by name: " + username);
+	    }
+	    
+	    if(PasswordUtil.verify(password, user.getPassword())) {
+	    	
 	    }
 	    
 		return new UsernamePasswordAuthenticationToken(user.getUsername(), password, generateAuthorities(user));

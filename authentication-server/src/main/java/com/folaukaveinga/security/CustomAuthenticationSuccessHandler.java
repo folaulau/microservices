@@ -25,6 +25,7 @@ import com.folaukaveinga.utility.FormatterUtil;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final String AUTH_HEADER_NAME = "X-AUTH-TOKEN";
 	
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
@@ -59,7 +60,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		Map<String, String> tokenMap = new HashMap<String, String>();
 		
 		
-		tokenMap.put("token", jwtToken);
+		tokenMap.put(AUTH_HEADER_NAME, jwtToken);
 
 		FormatterUtil.getObjectMapper().writeValue(response.getWriter(), tokenMap);
 	}

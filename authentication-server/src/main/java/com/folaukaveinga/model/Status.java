@@ -2,9 +2,14 @@ package com.folaukaveinga.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(value=Include.NON_NULL)
 public class Status implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+	public static final String SUCCESS = "success";
+	public static final String FAILURE = "failure";
 	private String status;
 	private String message;
 	private String token;
@@ -12,6 +17,9 @@ public class Status implements Serializable {
 	public Status() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	public Status(String status) {
+		this(status,null,null);
 	}
 	public Status(String status, String message, String token) {
 		super();

@@ -23,7 +23,7 @@ public class JwtTokenUtil implements Serializable {
     static final String TOKEN_SUBJECT = "retaurant";
     static final String TOKEN_CREATOR = "iate-restaurant";
     
-    private static final long serialVersionUID = -3301605591108950415L;
+    private static final long serialVersionUID = 1L;
     private Clock clock = DefaultClock.INSTANCE;
 
     //@Value("${jwt.secret}")

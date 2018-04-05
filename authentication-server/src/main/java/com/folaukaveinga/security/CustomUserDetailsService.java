@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
+import org.springframework.stereotype.Component;
 
 import com.folaukaveinga.model.User;
 import com.folaukaveinga.service.UserService;
@@ -17,6 +17,8 @@ import com.folaukaveinga.service.UserService;
  * @author fkaveinga
  *
  */
+
+//@Component
 public class CustomUserDetailsService implements UserDetailsService {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired

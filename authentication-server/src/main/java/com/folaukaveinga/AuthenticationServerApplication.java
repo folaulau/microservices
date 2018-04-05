@@ -48,7 +48,7 @@ public class AuthenticationServerApplication  {
 				double gb = 1073741824;// gigabyte to byte
 				Environment env = ctx.getEnvironment();
 
-				System.out.println("************************ Sidecar Health - Expenses ***************************");
+				System.out.println("************************ Restaurant Authentication Server ***************************");
 				System.out.println("** Active Profile: " + Arrays.toString(env.getActiveProfiles()));
 				System.out.println("** Port: " + env.getProperty("server.port"));
 				System.out.println("** External Url: " + InetAddress.getLocalHost().getHostAddress() + ":"
@@ -77,7 +77,8 @@ public class AuthenticationServerApplication  {
 	private UserService userService;
 	
 	private void loadTestData() {
-		loadUser();
+		loadMe();
+		loadUsers();
 	}
 	
 	int numberOfUsers = 5;
@@ -98,9 +99,9 @@ public class AuthenticationServerApplication  {
 			user.setPassword(hashedPassword);
 			user.addRole(User.USER);
 			
-			log.info(user.toJson());
 			try {
-				userService.save(user);
+				user = userService.save(user);
+				log.info("index: {}, {}", i, user.toJson());
 			} catch (Exception e) {
 				log.warn("Loading Error, msg: {}",e.getLocalizedMessage());
 			}
@@ -109,7 +110,7 @@ public class AuthenticationServerApplication  {
 		log.info("Expense test data loaded");
 	}
 	
-	private void loadUser() {
+	private void loadMe() {
 		log.info("loading User test data...");
 		
 		String plainTextPassword = "test12";//PasswordUtil.getRandomTempPassword();
@@ -123,9 +124,10 @@ public class AuthenticationServerApplication  {
 		user.setPassword(hashedPassword);
 		user.addRole(User.USER);
 		
-		log.info(user.toJson());
 		try {
-			userService.save(user);
+			user = userService.save(user);
+			
+			log.info(user.toJson());
 		} catch (Exception e) {
 			log.warn("Loading Error, msg: {}",e.getLocalizedMessage());
 		}

@@ -21,9 +21,13 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.folaukaveinga.utility.FormatterUtil;
 
+
+@JsonInclude(value=Include.NON_NULL)
 @Entity(name="user")
 @Table
 public class User implements Serializable {
@@ -36,6 +40,7 @@ public class User implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id")
 	private long id;
 	
 	@Column(name="username", unique=true)

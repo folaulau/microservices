@@ -111,7 +111,8 @@
 <script th:src="@{/bower_components/angular-resource/angular-resource.js}"></script>
 <script th:src="@{/bower_components/angular-ui-router/release/angular-ui-router.js}"></script>
 <script th:src="@{/bower_components/angular-messages/angular-messages.js}"></script>
-
+<!-- jwt-decode -->
+<script th:src="@{/bower_components/jwt-decode/build/jwt-decode.js}"></script>
 <!-- app setup -->
 <script th:src="@{/app/app.module.js}"></script>
 <script th:src="@{/app/app.config.js}"></script>
@@ -122,8 +123,12 @@
 <!-- Services -->
 <script th:src="@{/app/service/user.service.js}"></script>
 <script th:src="@{/app/service/authentication.service.js}"></script>
+<script th:src="@{/app/service/order.service.js}"></script>
+
 
 <!-- Login -->
 <script th:src="@{/app/login/login.controller.js}"></script>
+
+<script th:src="@{/app/order/order.controller.js}"></script>
 
 
