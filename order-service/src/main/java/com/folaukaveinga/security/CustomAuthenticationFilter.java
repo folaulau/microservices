@@ -24,8 +24,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.folaukaveinga.cache.UserCache;
 import com.folaukaveinga.exception.ApiError;
+import com.folaukaveinga.jwt.JwtPayload;
 import com.folaukaveinga.jwt.JwtTokenUtil;
-import com.folaukaveinga.model.User;
+import com.folaukaveinga.utility.ApiSession;
 import com.folaukaveinga.utility.FormatterUtil;
 
 @Component
@@ -63,8 +64,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		User user = userCache.findUserByToken(token);
-		if (user == null || user.getUsername().isEmpty()) {
+		ApiSession apiSession = userCache.findApiSessionToken(token);
+		if (apiSession == null) {
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 
@@ -74,23 +75,23 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			FormatterUtil.getObjectMapper().writeValue(response.getWriter(), new ApiError(HttpStatus.BAD_REQUEST, message));
 			return;
 		}
-		
-		log.info(user.toJson());
+		JwtPayload payload = jwtTokenUtil.getPlayloadByToken(token);
+		log.info(apiSession.toJson());
 		
 		// check token lifetime and extend it if needed.
 
-		Authentication authentication = getAuthentication(request, user);
+		Authentication authentication = getAuthentication(request,payload);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		filterChain.doFilter(request, response);
 	}
 
-	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request, User user) {
-		return new UsernamePasswordAuthenticationToken(user.getUsername(), null, generateAuthorities(user));
+	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request, JwtPayload payload) {
+		return new UsernamePasswordAuthenticationToken(payload.getEmail(), null, generateAuthorities(payload.getRoles()));
 	}
 
-	private List<GrantedAuthority> generateAuthorities(User user) {
-		List<GrantedAuthority> authorities = new ArrayList<>(user.getRoles().size());
-		for (String role : user.getRoles()) {
+	private List<GrantedAuthority> generateAuthorities(List<String> roles) {
+		List<GrantedAuthority> authorities = new ArrayList<>(roles.size());
+		for (String role : roles) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
 		}
 		return authorities;

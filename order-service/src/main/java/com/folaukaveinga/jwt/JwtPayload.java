@@ -7,18 +7,16 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.folaukaveinga.model.User;
 import com.folaukaveinga.utility.FormatterUtil;
 
 
 @JsonInclude(value=Include.NON_NULL)
 public class JwtPayload {
 	private String iss;
-	private String sub;
+	private long sub;
 	private String aud;
 	private String email;
 	private String firstName;
@@ -27,24 +25,17 @@ public class JwtPayload {
 	private Date iat;
 	private Date exp;
 	private Date nbf;
-	
-	@JsonIgnore
-	private User user;
-	
-	
 
 	public JwtPayload() {
-		this(null,null,null,null);
+		this(null,0,null);
 	}
 	
-	public JwtPayload(String iss, String sub,Date exp, User user) {
-		this(iss,sub,null,null,null,null,null,exp,null,user);
-		setUser(user);
-		
+	public JwtPayload(String iss, long sub,Date exp) {
+		this(iss,sub,null,null,null,null,null,exp,null);		
 	}
 	
-	public JwtPayload(String iss, String sub, String aud, String email, String firstName, String lastName,
-			List<String> roles, Date exp, Date nbf, User user) {
+	public JwtPayload(String iss, long sub, String aud, String email, String firstName, String lastName,
+			List<String> roles, Date exp, Date nbf) {
 		super();
 		this.iss = iss;
 		this.sub = sub;
@@ -55,7 +46,6 @@ public class JwtPayload {
 		this.roles = roles;
 		this.exp = exp;
 		this.nbf = nbf;
-		this.user = user;
 		this.iat = new Date();
 	}
 	
@@ -67,11 +57,11 @@ public class JwtPayload {
 		this.iss = iss;
 	}
 
-	public String getSub() {
+	public long getSub() {
 		return sub;
 	}
 
-	public void setSub(String sub) {
+	public void setSub(long sub) {
 		this.sub = sub;
 	}
 
@@ -130,21 +120,6 @@ public class JwtPayload {
 	public void setNbf(Date nbf) {
 		this.nbf = nbf;
 	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-		
-		if(user!=null) {
-			this.email = user.getUsername();
-			this.firstName= user.getFirstName();
-			this.lastName = user.getLastName();
-			this.roles = user.getRoles();
-		}
-	}
 	
 	public Date getIat() {
 		return iat;
@@ -191,5 +166,4 @@ public class JwtPayload {
 		
 		// return EqualsBuilder.reflectionEquals(this, obj);
 	}
-	
 }

@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.folaukaveinga.model.User;
+import com.folaukaveinga.utility.ApiSession;
 
 @Service
 public class UserCache {
@@ -27,19 +28,19 @@ public class UserCache {
 		this.hashOperations = this.redisTemplate.opsForHash();
 	}
 
-	public void add(String token, User user) {
-		this.hashOperations.put(HASH_KEY, token, user);
+	public void add(String token, ApiSession apiSession) {
+		this.hashOperations.put(HASH_KEY, token, apiSession);
 	}
 
-	public User findUserByToken(String token) {
-		return (User) hashOperations.get(HASH_KEY, token);
+	public ApiSession findApiSessionToken(String token) {
+		return (ApiSession) hashOperations.get(HASH_KEY, token);
 	}
 
 	public long delete(String token) {
 		return hashOperations.delete(HASH_KEY, token);
 	}
 	
-	public Map<Object, Object> findAllUsers() {
+	public Map<Object, Object> findAllApiSessions() {
 		return hashOperations.entries(HASH_KEY);
 	}
 }

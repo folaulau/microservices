@@ -21,7 +21,7 @@ angular.module('restaurant').factory('TokenStorage', function($log) {
 			request : function(config) {
 				var authToken = TokenStorage.retrieve();
 				if (authToken) {
-					config.headers['X-AUTH-TOKEN'] = authToken;
+					config.headers['token'] = authToken;
 				}
 				return config;
 			},

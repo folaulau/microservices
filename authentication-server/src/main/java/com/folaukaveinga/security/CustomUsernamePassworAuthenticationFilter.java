@@ -31,6 +31,7 @@ import com.folaukaveinga.jwt.JwtTokenUtil;
 import com.folaukaveinga.model.User;
 import com.folaukaveinga.service.UserService;
 import com.folaukaveinga.utility.ApiResponse;
+import com.folaukaveinga.utility.ApiSession;
 import com.folaukaveinga.utility.ApiSuccessResponse;
 import com.folaukaveinga.utility.FormatterUtil;
 
@@ -84,9 +85,11 @@ public class CustomUsernamePassworAuthenticationFilter extends AbstractAuthentic
 		
 		User user = userService.getUserByEmail(username);
 		
+		ApiSession apiSession = new ApiSession(request.getRemoteAddr());
+		
 		String jwtToken = jwtTokenUtil.generateToken(user);
 		
-		userCache.add(jwtToken, user);
+		userCache.add(jwtToken, apiSession);
 		
 		log.info("username: {}",authResult.getPrincipal().toString());
 		log.info("jwtToken: {}",jwtToken);

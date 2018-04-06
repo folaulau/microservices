@@ -3,15 +3,11 @@ package com.folaukaveinga.jwt;
 import java.io.Serializable;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import com.folaukaveinga.model.User;
 import com.folaukaveinga.utility.DateTimeUtil;
 
 import io.jsonwebtoken.Claims;
@@ -20,6 +16,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClock;
 
+@SuppressWarnings("unchecked")
 @Component
 public class JwtTokenUtil implements Serializable {
 
@@ -32,11 +29,8 @@ public class JwtTokenUtil implements Serializable {
 	@Value("${jwt.lifetime.duration}")
 	private Long LIFETIME_DURATION;
 
-	@Value("${jwt.subject}")
-	private String SUBJECT;
-
-	@Value("${jwt.creator}")
-	private String CREATOR;
+	@Value("${jwt.issuer}")
+	private String ISSUER;
 
 	/**
 	 * claims.put("id", user.getId()); claims.put("email", user.getUsername());
@@ -45,13 +39,20 @@ public class JwtTokenUtil implements Serializable {
 	 * @param token
 	 * @return
 	 */
-	public User getUserFromToken(String token) {
+	
+	public JwtPayload getPlayloadByToken(String token) {
 		Claims claims = getAllClaimsFromToken(token);
-		String email = claims.get("email").toString();
-		List<String> roles = (List<String>) claims.get("roles");
-		int id = (int) claims.get("id");
-		User user = new User(id, email, roles);
-		return user;
+		JwtPayload payload = new JwtPayload();
+		payload.setEmail(claims.get("email").toString());
+		payload.setExp(claims.getExpiration());
+		payload.setFirstName(claims.get("firstName").toString());
+		payload.setLastName(claims.get("lastName").toString());
+		payload.setIat(claims.getIssuedAt());
+		payload.setIss(claims.getIssuer());
+		payload.setSub(Long.parseLong(claims.getSubject()));
+		payload.setNbf(claims.getNotBefore());
+		payload.setRoles(claims.get("roles", List.class));
+		return payload;
 	}
 
 	public String getUsernameFromToken(String token) {
@@ -89,13 +90,6 @@ public class JwtTokenUtil implements Serializable {
 		return false;
 	}
 
-	public String generateToken(User user) {
-		final Date createdTime = clock.now();
-		final Date expirationTime = getLifetimeExpiration(createdTime);
-		JwtPayload jwtPayload = new JwtPayload(this.CREATOR, this.SUBJECT, expirationTime, user);
-		return generateToken(jwtPayload);
-	}
-
 	public String generateToken(JwtPayload jwtPayload) {
 		return Jwts.builder()
 				.setPayload(jwtPayload.toJson())
@@ -112,8 +106,6 @@ public class JwtTokenUtil implements Serializable {
 	public String refreshToken(String token) {
 		final Date createdDate = clock.now();
 		final Date expirationDate = getLifetimeExpiration(createdDate);
-		System.out.println("createdDate: " + createdDate);
-		System.out.println("expirationDate: " + expirationDate);
 		final Claims claims = getAllClaimsFromToken(token);
 		claims.setIssuedAt(createdDate);
 		claims.setExpiration(expirationDate);
@@ -129,6 +121,11 @@ public class JwtTokenUtil implements Serializable {
 				&& !isCreatedBeforeLastPasswordReset(created, lastResetDate));
 	}
 
+	/**
+	 * 1 lifetime is 6 hours
+	 * @param createdDate
+	 * @return Date
+	 */
 	private Date getLifetimeExpiration(Date createdDate) {
 		return new Date(createdDate.getTime() + DateTimeUtil.getHoursInMilliseconds(LIFETIME_DURATION));
 	}
