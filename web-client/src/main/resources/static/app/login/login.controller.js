@@ -32,7 +32,7 @@
 					$log.log("login success");
 					$log.log(result);
 					
-					let authToken = result['jwt_token'];
+					let authToken = result['token'];
 					$log.log("authToken");
 					$log.log(authToken);
 					if(authToken!=null && authToken.length>10){

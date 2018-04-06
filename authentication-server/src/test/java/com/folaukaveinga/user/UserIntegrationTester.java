@@ -35,14 +35,14 @@ public class UserIntegrationTester {
 	public void testVerifyCredentials() {
 		String password = "test12";
 		
-		User user = userService.getUserByUsername("folau@gmail.com");
+		User user = userService.getUserByEmail("folau@gmail.com");
 		
 		assertTrue(PasswordUtil.verify(password,user.getPassword()));
 	}
 	
 	@Test
 	public void getUserByToken() {
-		String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmb2xhdUBnbWFpbC5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlkIjoxLCJleHAiOjE1MjI4MDY1MjUsImlhdCI6MTUyMjgwNTkyNSwiZW1haWwiOiJmb2xhdUBnbWFpbC5jb20ifQ.4K-U9awUGy9GvfYeBziagZUugM83XJ-xP-1-3u4LFsPxnkETPbJNXHuxLKfGy82Q4WhM3l7oORlSatYkVsv2GQ";
+		String token = "eyJhbGciOiJIUzUxMiJ9.ewogICJpc3MiIDogImlhdGUtcmVzdGF1cmFudCIsCiAgInN1YiIgOiAicmV0YXVyYW50IiwKICAiZW1haWwiIDogImZvbGF1QGdtYWlsLmNvbSIsCiAgImZpcnN0TmFtZSIgOiAiTktuaHl5aFkiLAogICJsYXN0TmFtZSIgOiAiZm50aEJBSmkiLAogICJyb2xlcyIgOiBbICJ1c2VyIiBdLAogICJpYXQiIDogMTUyMjk3NzUyMTkyNSwKICAiZXhwIiA6IDE1MjI5OTkxMjE5MjUKfQ.6vqhQm7CUvAmVhB5f94dismBG3roj8I3LP6fKfKVRLKS1lEF5CmQlzlGE-upvfEJaXNj9gjveHD7XARqj-vXvA";
 		User user = userCache.findUserByToken(token);
 		System.out.println(user.toJson());
 	}

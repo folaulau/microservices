@@ -1,4 +1,4 @@
-<header>
+<header ng-controller="NavbarController as navbar">
 	<div class="navbar navbar-default navbar-static-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -11,7 +11,8 @@
 			<div class="navbar-collapse collapse ">
 				<ul class="nav navbar-nav">
 					<li><a href="/">Home</a></li>
-					<li><a href="/login">Login</a></li>
+					<li ng-if="!navbar.userLoggedIn"><a href="/login">Login</a></li>
+					<li ng-if="navbar.userLoggedIn"><a ng-click="navbar.logout()" style="cursor: pointer;">Logout</a></li>
 					<li><a href="/signup">Sign Up</a></li>
 				</ul>
 			</div>

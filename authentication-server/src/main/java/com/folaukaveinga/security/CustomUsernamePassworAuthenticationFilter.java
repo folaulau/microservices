@@ -24,15 +24,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.stereotype.Component;
 
 import com.folaukaveinga.cache.UserCache;
 import com.folaukaveinga.jwt.JwtTokenUtil;
 import com.folaukaveinga.model.User;
 import com.folaukaveinga.service.UserService;
+import com.folaukaveinga.utility.ApiResponse;
+import com.folaukaveinga.utility.ApiSuccessResponse;
 import com.folaukaveinga.utility.FormatterUtil;
 
 /**
@@ -70,7 +69,7 @@ public class CustomUsernamePassworAuthenticationFilter extends AbstractAuthentic
 		String password = getPassword(request);
 		log.info("username: {}",username);
 		log.info("password: {}",password);
-		return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>()));
+		return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(username, password));
 	}
 
 	@Override
@@ -83,7 +82,7 @@ public class CustomUsernamePassworAuthenticationFilter extends AbstractAuthentic
 		
 		String username = authResult.getPrincipal().toString();
 		
-		User user = userService.getUserByUsername(username);
+		User user = userService.getUserByEmail(username);
 		
 		String jwtToken = jwtTokenUtil.generateToken(user);
 		
@@ -91,19 +90,22 @@ public class CustomUsernamePassworAuthenticationFilter extends AbstractAuthentic
 		
 		log.info("username: {}",authResult.getPrincipal().toString());
 		log.info("jwtToken: {}",jwtToken);
-		Map<String, String> tokenMap = new HashMap<String, String>();
 		
-		
-		tokenMap.put(authToken, jwtToken);
-
-		FormatterUtil.getObjectMapper().writeValue(response.getWriter(), tokenMap);
+		FormatterUtil.getObjectMapper().writeValue(response.getWriter(), new ApiSuccessResponse(ApiResponse.SUCCESS, jwtToken, null));
 	}
 
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
 		log.info("unsuccessfulAuthentication(...)");
-		super.unsuccessfulAuthentication(request, response, failed);
+		
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setStatus(HttpStatus.BAD_REQUEST.value());
+		
+		String message = failed.getLocalizedMessage();
+		log.info("Error message: {}",message);
+
+		FormatterUtil.getObjectMapper().writeValue(response.getWriter(), new ApiSuccessResponse(ApiResponse.FAILURE,message));
 	}
 	
 	private String getUsername(HttpServletRequest request) {

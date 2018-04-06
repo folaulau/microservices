@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.folaukaveinga.cache.UserCache;
 import com.folaukaveinga.exception.ApiError;
 import com.folaukaveinga.exception.ProcessException;
-import com.folaukaveinga.model.Status;
+import com.folaukaveinga.utility.ApiResponse;
+import com.folaukaveinga.utility.ApiSuccessResponse;
 
 @RestController
 public class LogoutController {
@@ -40,6 +41,6 @@ public class LogoutController {
 		long num = userCache.delete(authToken);
 		log.info("User logged out. {}",num);
 		
-		return new ResponseEntity<>(new Status(Status.SUCCESS), HttpStatus.OK);
+		return new ResponseEntity<>(new ApiSuccessResponse(ApiResponse.SUCCESS), HttpStatus.OK);
 	}
 }
